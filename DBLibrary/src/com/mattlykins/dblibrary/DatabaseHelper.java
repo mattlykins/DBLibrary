@@ -140,16 +140,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
     }
+    
 
-    // Add your public helper methods to access and get content from the
-    // database.
-    // You could return cursors by doing "return myDataBase.query(....)" so it'd
-    // be easy
-    // to you to create adapters for your views.
-
-    public Cursor getAllRows() {
+    public Cursor getAllRows(String tableName) {
         Cursor c = null;
-        String selectQuery = "SELECT * FROM UNITS";
+        String selectQuery = "SELECT * FROM " + tableName;
         Cursor cursor = myDataBase.rawQuery(selectQuery, null);
         return cursor;
     }
