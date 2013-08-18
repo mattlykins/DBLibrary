@@ -142,10 +142,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
     
 
-    public Cursor getAllRows(String tableName) {
-        Cursor c = null;
+    public Cursor getAllRows(String tableName) {        
         String selectQuery = "SELECT * FROM " + tableName;
         Cursor cursor = myDataBase.rawQuery(selectQuery, null);
+        return cursor;
+    }
+    
+    public Cursor sqlQuery(String query){        
+        Cursor cursor = myDataBase.rawQuery(query,null);
         return cursor;
     }
 
