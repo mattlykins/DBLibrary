@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -117,8 +118,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // Open the database
         String myPath = myContext.getDatabasePath(DB_NAME).getPath();
-        myDataBase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
-
+        myDataBase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
+    }
+    
+    public void Delete_ByID(String tableName,int id)
+    {
+        myDataBase.delete(tableName, "_id=" + id, null);
+    }
+    
+    public void Update_ByID(String tableName, int ID, String[] colNames, String[] data)
+    {
+        ContentValues values = new ContentValues();
+        for( int i = 0; i < colNames.length; i++)
+        {
+           values.put(colNames[i], data[i]);
+           Log.d("FERRET",ID+ " " + colNames[i] + " " + data[i]);
+        }
+        
+        myDataBase.update(tableName, values, "_id=" + ID, null);
     }
 
     @Override
