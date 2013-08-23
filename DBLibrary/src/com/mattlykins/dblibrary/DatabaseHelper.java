@@ -158,6 +158,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
     
+    public String getSymbolFromID(final String[] tempID)
+    {
+        Cursor c = myDataBase.rawQuery("SELECT SYMBOL FROM UNITS WHERE ID='?'", tempID);
+        if(c != null){
+            return c.getString(0);
+        }
+        else
+        {
+            return null;
+        }
+        
+    }    
 
     public Cursor getAllRows(String tableName) {        
         String selectQuery = "SELECT * FROM " + tableName;
@@ -174,5 +186,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         final StackTraceElement[] ste = Thread.currentThread().getStackTrace();
         return ste[1 + depth].getMethodName();
     }
+    
+
 
 }
