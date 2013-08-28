@@ -168,9 +168,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         {
             return null;
         }
-        
-    }    
-
+    }
+    
+    public String getIDFromSymbol(final String[] symbol)
+    {
+        Cursor c = myDataBase.rawQuery("SELECT _id FROM UNITS WHERE SYMBOL='?'", symbol);
+        if(c != null){
+            return String.valueOf(c.getInt(0));
+        }
+        else
+        {
+            return null;
+        }
+    }
+    
     public Cursor getAllRows(String tableName) {        
         String selectQuery = "SELECT * FROM " + tableName;
         Cursor cursor = myDataBase.rawQuery(selectQuery, null);
