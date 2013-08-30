@@ -80,7 +80,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private boolean checkDatabase() {
 
         File file = myContext.getDatabasePath(DB_NAME);
-        
+
         return file.exists();
     }
 
@@ -120,21 +120,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String myPath = myContext.getDatabasePath(DB_NAME).getPath();
         myDataBase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
     }
-    
-    public void Delete_ByID(String tableName,int id)
-    {
+
+    public void Delete_ByID(String tableName, int id) {
         myDataBase.delete(tableName, "_id=" + id, null);
     }
-    
-    public void Update_ByID(String tableName, int ID, String[] colNames, String[] data)
-    {
+
+    public void Update_ByID(String tableName, int ID, String[] colNames, String[] data) {
         ContentValues values = new ContentValues();
-        for( int i = 0; i < colNames.length; i++)
-        {
-           values.put(colNames[i], data[i]);
-           Log.d("FERRET",ID+ " " + colNames[i] + " " + data[i]);
+        for (int i = 0; i < colNames.length; i++) {
+            values.put(colNames[i], data[i]);
+            Log.d("FERRET", ID + " " + colNames[i] + " " + data[i]);
         }
-        
+
         myDataBase.update(tableName, values, "_id=" + ID, null);
     }
 
@@ -157,39 +154,47 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
     }
-    
-    public String getSymbolFromID(final String[] tempID)
-    {
+
+    public String getSymbolFromID(final String[] tempID) {
         Cursor c = myDataBase.rawQuery("SELECT SYMBOL FROM UNITS WHERE ID='?'", tempID);
-        if(c != null){
+        if (c != null) {
             return c.getString(0);
         }
-        else
-        {
+        else {
             return null;
         }
     }
-    
-    public String getIDFromSymbol(final String[] symbol)
-    {
+
+    public String getIDFromSymbol(final String[] symbol) {
         Cursor c = myDataBase.rawQuery("SELECT _id FROM UNITS WHERE SYMBOL='?'", symbol);
-        if(c != null){
+        if (c != null) {
             return String.valueOf(c.getInt(0));
         }
-        else
-        {
+        else {
             return null;
         }
     }
-    
-    public Cursor getAllRows(String tableName) {        
+
+    public void Insert(final String table, final String[] colNames, final String[] data) {
+        ContentValues values = new ContentValues();
+        for (int i = 0; i < colNames.length; i++) {
+            values.put(colNames[i], data[i]);
+            Log.d("FERRET", colNames[i] + " " + data[i]);
+        }
+
+        myDataBase.insert(table, null, values);
+        
+
+    }
+
+    public Cursor getAllRows(String tableName) {
         String selectQuery = "SELECT * FROM " + tableName;
         Cursor cursor = myDataBase.rawQuery(selectQuery, null);
         return cursor;
     }
-    
-    public Cursor sqlQuery(String query){        
-        Cursor cursor = myDataBase.rawQuery(query,null);
+
+    public Cursor sqlQuery(String query) {
+        Cursor cursor = myDataBase.rawQuery(query, null);
         return cursor;
     }
 
@@ -197,7 +202,5 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         final StackTraceElement[] ste = Thread.currentThread().getStackTrace();
         return ste[1 + depth].getMethodName();
     }
-    
-
 
 }
