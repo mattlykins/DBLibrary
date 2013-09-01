@@ -10,10 +10,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -122,7 +124,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void Delete_ByID(String tableName, int id) {
-        myDataBase.delete(tableName, "_id=" + id, null);
+        try {
+            myDataBase.delete(tableName, "_id=" + id, null);
+        }
+        catch (SQLException sqlex) {
+            throw sqlex;
+        }
     }
 
     public void Update_ByID(String tableName, int ID, String[] colNames, String[] data) {
@@ -132,7 +139,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             Log.d("FERRET", ID + " " + colNames[i] + " " + data[i]);
         }
 
-        myDataBase.update(tableName, values, "_id=" + ID, null);
+        try {
+            myDataBase.update(tableName, values, "_id=" + ID, null);
+        }
+        catch (SQLException sqlex) {
+            throw sqlex;
+        }
     }
 
     @Override
@@ -182,7 +194,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             Log.d("FERRET", colNames[i] + " " + data[i]);
         }
 
-        myDataBase.insert(table, null, values);
+        try {
+            myDataBase.insertOrThrow(table, null, values);
+        }
+        catch (SQLException sqlex) {
+            throw sqlex;
+        }
         
 
     }
