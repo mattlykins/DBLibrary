@@ -200,7 +200,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         catch (SQLException sqlex) {
             throw sqlex;
         }
-        
 
     }
 
@@ -210,8 +209,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor sqlQuery(String query) {
-        Cursor cursor = myDataBase.rawQuery(query, null);
+    // public Cursor sqlQuery(String query) {
+    // Cursor cursor = myDataBase.rawQuery(query, null);
+    // return cursor;
+    // }
+
+    public Cursor Query(final Boolean distinct, final String table, final String[] columns,
+            final String selection, final String[] selectionArgs) {
+        
+        Cursor cursor = myDataBase.query(distinct, table, columns, selection, selectionArgs, null,
+                null, null, null, null);
+        
         return cursor;
     }
 
