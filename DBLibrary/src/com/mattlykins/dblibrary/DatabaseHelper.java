@@ -203,9 +203,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public Cursor getAllRows(String tableName) {
-        String selectQuery = "SELECT * FROM " + tableName;
-        Cursor cursor = myDataBase.rawQuery(selectQuery, null);
+    public Cursor getAllRows(String tableName, String orderBy) {
+        String selectQuery = "SELECT * FROM " + tableName + " ORDER BY " + orderBy;
+        Cursor cursor = myDataBase.rawQuery(selectQuery,null);
         return cursor;
     }
 
