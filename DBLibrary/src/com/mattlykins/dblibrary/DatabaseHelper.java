@@ -121,6 +121,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Open the database
         String myPath = myContext.getDatabasePath(DB_NAME).getPath();
         myDataBase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
+       // myDataBase.setForeignKeyConstraintsEnabled(true);
+        if (!myDataBase.isReadOnly()) {
+            // Enable foreign key constraints
+            myDataBase.execSQL("PRAGMA foreign_keys=ON;");
+        }
     }
 
     public void Delete_ByID(String tableName, int id) {
