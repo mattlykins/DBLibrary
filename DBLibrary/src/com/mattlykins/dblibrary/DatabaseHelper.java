@@ -19,218 +19,218 @@ import android.widget.Toast;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    public static final String PACKAGENAME = "com.mattlykins.dblibrary";
+	public static final String PACKAGENAME = "com.mattlykins.dblibrary";
 
-    private static String DB_NAME = "ConversionFactors";
+	private static String DB_NAME = "ConversionFactors";
 
-    private SQLiteDatabase myDataBase;
+	private SQLiteDatabase myDataBase;
 
-    private final Context myContext;
+	private final Context myContext;
 
-    /**
-     * Constructor Takes and keeps a reference of the passed context in order to
-     * access to the application assets and resources.
-     * 
-     * @param context
-     */
-    public DatabaseHelper(Context context) {
+	/**
+	 * Constructor Takes and keeps a reference of the passed context in order to
+	 * access to the application assets and resources.
+	 * 
+	 * @param context
+	 */
+	public DatabaseHelper(Context context) {
 
-        super(context, DB_NAME, null, 1);
-        this.myContext = context;
-    }
+		super(context, DB_NAME, null, 1);
+		this.myContext = context;
+	}
 
-    /**
-     * Creates a empty database on the system and rewrites it with your own
-     * database.
-     * */
-    public void createDataBase() throws IOException {
+	/**
+	 * Creates a empty database on the system and rewrites it with your own
+	 * database.
+	 * */
+	public void createDataBase() throws IOException {
 
-        boolean dbExist = checkDatabase();
+		boolean dbExist = checkDatabase();
 
-        if (dbExist) {
-            // do nothing - database already exist
-        }
-        else {
+		if (dbExist) {
+			// do nothing - database already exist
+		} else {
 
-            // By calling this method an empty database will be created into the
-            // default system path
-            // of your application so we are gonna be able to overwrite that
-            // database with our database.
-            this.getWritableDatabase();
+			// By calling this method an empty database will be created into the
+			// default system path
+			// of your application so we are gonna be able to overwrite that
+			// database with our database.
+			this.getWritableDatabase();
 
-            try {
+			try {
 
-                copyDataBase();
+				copyDataBase();
 
-            }
-            catch (IOException e) {
+			} catch (IOException e) {
 
-                Log.d("EXCEPTION", "" + getMethodName(2));
-                throw new Error("Error copying database");
+				Log.d("EXCEPTION", "" + getMethodName(2));
+				throw new Error("Error copying database");
 
-            }
-        }
+			}
+		}
 
-    }
+	}
 
-    /**
-     * Check if the database already exist to avoid re-copying the file each
-     * time you open the application.
-     * 
-     * @return true if it exists, false if it doesn't
-     */
-    private boolean checkDatabase() {
+	/**
+	 * Check if the database already exist to avoid re-copying the file each
+	 * time you open the application.
+	 * 
+	 * @return true if it exists, false if it doesn't
+	 */
+	private boolean checkDatabase() {
 
-        File file = myContext.getDatabasePath(DB_NAME);
+		File file = myContext.getDatabasePath(DB_NAME);
 
-        return file.exists();
-    }
+		return file.exists();
+	}
 
-    /**
-     * Copies your database from your local assets-folder to the just created
-     * empty database in the system folder, from where it can be accessed and
-     * handled. This is done by transfering bytestream.
-     * */
-    private void copyDataBase() throws IOException {
+	/**
+	 * Copies your database from your local assets-folder to the just created
+	 * empty database in the system folder, from where it can be accessed and
+	 * handled. This is done by transfering bytestream.
+	 * */
+	private void copyDataBase() throws IOException {
 
-        // Open your local db as the input stream
-        InputStream myInput = myContext.getAssets().open(DB_NAME);
+		// Open your local db as the input stream
+		InputStream myInput = myContext.getAssets().open(DB_NAME);
 
-        // Path to the just created empty db
-        String outFileName = myContext.getDatabasePath(DB_NAME).getPath();
+		// Path to the just created empty db
+		String outFileName = myContext.getDatabasePath(DB_NAME).getPath();
 
-        // Open the empty db as the output stream
-        OutputStream myOutput = new FileOutputStream(outFileName);
+		// Open the empty db as the output stream
+		OutputStream myOutput = new FileOutputStream(outFileName);
 
-        // transfer bytes from the inputfile to the outputfile
-        byte[] buffer = new byte[1024];
-        int length;
-        while ((length = myInput.read(buffer)) > 0) {
-            myOutput.write(buffer, 0, length);
-        }
+		// transfer bytes from the inputfile to the outputfile
+		byte[] buffer = new byte[1024];
+		int length;
+		while ((length = myInput.read(buffer)) > 0) {
+			myOutput.write(buffer, 0, length);
+		}
 
-        // Close the streams
-        myOutput.flush();
-        myOutput.close();
-        myInput.close();
+		// Close the streams
+		myOutput.flush();
+		myOutput.close();
+		myInput.close();
 
-    }
+	}
 
-    public void openDataBase() throws SQLException {
+	public void openDataBase() throws SQLException {
 
-        // Open the database
-        String myPath = myContext.getDatabasePath(DB_NAME).getPath();
-        myDataBase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
-       // myDataBase.setForeignKeyConstraintsEnabled(true);
-        if (!myDataBase.isReadOnly()) {
-            // Enable foreign key constraints
-            myDataBase.execSQL("PRAGMA foreign_keys=ON;");
-        }
-    }
+		// Open the database
+		String myPath = myContext.getDatabasePath(DB_NAME).getPath();
+		myDataBase = SQLiteDatabase.openDatabase(myPath, null,
+				SQLiteDatabase.OPEN_READWRITE);
+		myDataBase.setForeignKeyConstraintsEnabled(true);
+//		if (!myDataBase.isReadOnly()) {
+//			// Enable foreign key constraints
+//			myDataBase.execSQL("PRAGMA foreign_keys=ON;");
+//		}
+	}
 
-    public void Delete_ByID(String tableName, int id) {
-        try {
-            myDataBase.delete(tableName, "_id=" + id, null);
-        }
-        catch (SQLException sqlex) {
-            throw sqlex;
-        }
-    }
+	public void Delete_ByID(String tableName, int id) {
+		try {
+			myDataBase.delete(tableName, "_id=" + id, null);
+		} catch (SQLException sqlex) {
+			throw sqlex;
+		}
+	}
 
-    public void Update_ByID(String tableName, int ID, String[] colNames, String[] data) {
-        ContentValues values = new ContentValues();
-        for (int i = 0; i < colNames.length; i++) {
-            values.put(colNames[i], data[i]);
-            Log.d("FERRET", ID + " " + colNames[i] + " " + data[i]);
-        }
+	public void Update_ByID(String tableName, int ID, String[] colNames,
+			String[] data) {
+		ContentValues values = new ContentValues();
+		for (int i = 0; i < colNames.length; i++) {
+			values.put(colNames[i], data[i]);
+			Log.d("FERRET", ID + " " + colNames[i] + " " + data[i]);
+		}
 
-        try {
-            myDataBase.update(tableName, values, "_id=" + ID, null);
-        }
-        catch (SQLException sqlex) {
-            throw sqlex;
-        }
-    }
+		try {
+			myDataBase.update(tableName, values, "_id=" + ID, null);
+		} catch (SQLException sqlex) {
+			throw sqlex;
+		}
+	}
 
-    @Override
-    public synchronized void close() {
+	@Override
+	public synchronized void close() {
 
-        if (myDataBase != null)
-            myDataBase.close();
+		if (myDataBase != null)
+			myDataBase.close();
 
-        super.close();
+		super.close();
 
-    }
+	}
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
+	@Override
+	public void onCreate(SQLiteDatabase db) {
 
-    }
+	}
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+	@Override
+	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-    }
+	}
 
-    public String getSymbolFromID(final String[] tempID) {
-        Cursor c = myDataBase.rawQuery("SELECT SYMBOL FROM UNITS WHERE ID='?'", tempID);
-        if (c != null) {
-            return c.getString(0);
-        }
-        else {
-            return null;
-        }
-    }
+	public String getSymbolFromID(final String[] tempID) {
+		Cursor c = myDataBase.rawQuery("SELECT SYMBOL FROM UNITS WHERE ID='?'",
+				tempID);
+		if (c != null) {
+			return c.getString(0);
+		} else {
+			return null;
+		}
+	}
 
-    public String getIDFromSymbol(final String[] symbol) {
-        Cursor c = myDataBase.rawQuery("SELECT _id FROM UNITS WHERE SYMBOL='?'", symbol);
-        if (c != null) {
-            return String.valueOf(c.getInt(0));
-        }
-        else {
-            return null;
-        }
-    }
+	public String getIDFromSymbol(final String[] symbol) {
+		Cursor c = myDataBase.rawQuery(
+				"SELECT _id FROM UNITS WHERE SYMBOL='?'", symbol);
+		if (c != null) {
+			return String.valueOf(c.getInt(0));
+		} else {
+			return null;
+		}
+	}
 
-    public void Insert(final String table, final String[] colNames, final String[] data) {
-        ContentValues values = new ContentValues();
-        for (int i = 0; i < colNames.length; i++) {
-            values.put(colNames[i], data[i]);
-            Log.d("FERRET", colNames[i] + " " + data[i]);
-        }
+	public void Insert(final String table, final String[] colNames,
+			final String[] data) {
+		ContentValues values = new ContentValues();
+		for (int i = 0; i < colNames.length; i++) {
+			values.put(colNames[i], data[i]);
+			Log.d("FERRET", colNames[i] + " " + data[i]);
+		}
 
-        try {
-            myDataBase.insertOrThrow(table, null, values);
-        }
-        catch (SQLException sqlex) {
-            throw sqlex;
-        }
+		try {
+			myDataBase.insertOrThrow(table, null, values);
+		} catch (SQLException sqlex) {
+			throw sqlex;
+		}
 
-    }
+	}
 
-    public Cursor getAllRows(String tableName, String orderBy) {
-        String selectQuery = "SELECT * FROM " + tableName + " ORDER BY " + orderBy;
-        Cursor cursor = myDataBase.rawQuery(selectQuery,null);
-        return cursor;
-    }
+	public Cursor getAllRows(String tableName, String orderBy) {
+		String selectQuery = "SELECT * FROM " + tableName + " ORDER BY "
+				+ orderBy;
+		Cursor cursor = myDataBase.rawQuery(selectQuery, null);
+		return cursor;
+	}
 
-    // public Cursor sqlQuery(String query) {
-    // Cursor cursor = myDataBase.rawQuery(query, null);
-    // return cursor;
-    // }
+	// public Cursor sqlQuery(String query) {
+	// Cursor cursor = myDataBase.rawQuery(query, null);
+	// return cursor;
+	// }
 
-    public Cursor Query(final Boolean distinct, final String table, final String[] columns,
-            final String selection, final String[] selectionArgs) {
-        
-        Cursor cursor = myDataBase.query(distinct, table, columns, selection, selectionArgs, null,
-                null, null, null, null);
-        
-        return cursor;
-    }
+	public Cursor Query(final Boolean distinct, final String table,
+			final String[] columns, final String selection,
+			final String[] selectionArgs) {
 
-    public static String getMethodName(final int depth) {
-        final StackTraceElement[] ste = Thread.currentThread().getStackTrace();
-        return ste[1 + depth].getMethodName();
-    }
+		Cursor cursor = myDataBase.query(distinct, table, columns, selection,
+				selectionArgs, null, null, null, null, null);
+
+		return cursor;
+	}
+
+	public static String getMethodName(final int depth) {
+		final StackTraceElement[] ste = Thread.currentThread().getStackTrace();
+		return ste[1 + depth].getMethodName();
+	}
 
 }
