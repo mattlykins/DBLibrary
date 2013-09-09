@@ -213,10 +213,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return cursor;
 	}
 
-	// public Cursor sqlQuery(String query) {
-	// Cursor cursor = myDataBase.rawQuery(query, null);
-	// return cursor;
-	// }
+	 public Cursor sqlQuery(String query) {
+	 Cursor cursor = myDataBase.rawQuery(query, null);
+	 return cursor;
+	 }
 
 	public Cursor Query(final Boolean distinct, final String table,
 			final String[] columns, final String selection,
